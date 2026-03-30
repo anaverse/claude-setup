@@ -1,0 +1,10 @@
+{
+  "enabledMcpjsonServers": [
+    "supabase",
+    "n8n-mcp",
+    "context7",
+    "clickup",
+    "hostinger"
+  ],
+  "enableAllProjectMcpServers": true
+}

@@ -1,0 +1,27 @@
+# Personal overrides
+settings.local.json
+
+# Secrets and auth
+mcp.json
+*.env
+.env*
+
+# Runtime / ephemeral
+history.jsonl
+file-history/
+paste-cache/
+image-cache/
+cache/
+debug/
+downloads/
+backups/
+plans/
+plugins/cache/
+plugins/data/
+plugins/install-counts-cache.json
+security_warnings_state_*.json
+mcp-needs-auth-cache.json
+projects/
+
+# OS
+.DS_Store

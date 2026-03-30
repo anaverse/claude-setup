@@ -1,0 +1,71 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "type": "url",
+      "url": "https://mcp.supabase.com/mcp"
+    },
+    "cloudinary": {
+      "url": "https://asset-management.mcp.cloudinary.com/sse",
+      "headers": {
+        "cloudinary-url": "cloudinary://API_KEY:API_SECRET@YOUR_CLOUD_NAME"
+      }
+    },
+    "n8n-mcp": {
+      "command": "/opt/homebrew/bin/npx",
+      "args": ["n8n-mcp"],
+      "env": {
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error",
+        "DISABLE_CONSOLE_OUTPUT": "true",
+        "N8N_API_URL": "https://your-n8n-instance.example.com",
+        "N8N_API_KEY": "YOUR_N8N_API_KEY"
+      }
+    },
+    "perplexity": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "perplexity-mcp"],
+      "env": {
+        "PERPLEXITY_API_KEY": "YOUR_PERPLEXITY_API_KEY"
+      }
+    },
+    "clickup": {
+      "command": "npx",
+      "args": ["-y", "@hauptsache.net/clickup-mcp"],
+      "env": {
+        "CLICKUP_API_KEY": "YOUR_CLICKUP_API_KEY",
+        "CLICKUP_TEAM_ID": "YOUR_TEAM_ID"
+      }
+    },
+    "MCP_DOCKER": {
+      "command": "docker",
+      "args": ["mcp", "gateway", "run"],
+      "type": "stdio"
+    },
+    "shopify": {
+      "command": "node",
+      "args": ["/path/to/shopify-mcp/dist/index.js"],
+      "env": {
+        "SHOPIFY_CLIENT_ID": "YOUR_CLIENT_ID",
+        "SHOPIFY_CLIENT_SECRET": "YOUR_CLIENT_SECRET",
+        "SHOPIFY_STORE_DOMAIN": "your-store.myshopify.com"
+      }
+    },
+    "hostinger": {
+      "type": "stdio",
+      "command": "/opt/homebrew/bin/hostinger-api-mcp",
+      "args": ["--stdio"],
+      "env": {
+        "HOSTINGER_API_TOKEN": "YOUR_HOSTINGER_API_TOKEN"
+      }
+    },
+    "klaviyo": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["klaviyo-mcp-server@latest"],
+      "env": {
+        "PRIVATE_API_KEY": "YOUR_KLAVIYO_API_KEY"
+      }
+    }
+  }
+}

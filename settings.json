@@ -11,8 +11,26 @@
       "Bash(git log)",
       "Bash(git branch)",
       "Bash(ls)",
+      "mcp__n8n-mcp__n8n_executions",
+      "mcp__n8n-mcp__n8n_list_workflows",
+      "mcp__n8n-mcp__n8n_get_workflow",
+      "mcp__n8n-mcp__search_nodes",
+      "mcp__n8n-mcp__search_templates",
+      "mcp__n8n-mcp__get_node",
+      "mcp__n8n-mcp__tools_documentation",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
       "mcp__plugin_context7_context7__resolve-library-id",
-      "mcp__plugin_context7_context7__query-docs"
+      "mcp__plugin_context7_context7__query-docs",
+      "mcp__clickup-personal__clickup_search",
+      "mcp__clickup-personal__clickup_get_task",
+      "mcp__clickup-personal__clickup_get_workspace_hierarchy",
+      "mcp__clickup-plants-express__clickup_search",
+      "mcp__clickup-plants-express__clickup_get_task",
+      "mcp__clickup-plants-express__clickup_get_workspace_hierarchy",
+      "mcp__wp-*__discover-abilities",
+      "mcp__wp-*__get-ability-info",
+      "mcp__wp-*__execute-ability"
     ]
   },
   "hooks": {
@@ -34,6 +52,43 @@
             "command": "afplay /System/Library/Sounds/Glass.aiff &"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/close-check.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"$SUPERSET_HOME_DIR\" ] && [ -x \"$SUPERSET_HOME_DIR/hooks/notify.sh\" ] && \"$SUPERSET_HOME_DIR/hooks/notify.sh\" || true"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/prompt-check.sh",
+            "timeout": 5,
+            "statusMessage": "Checking prompt quality..."
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"$SUPERSET_HOME_DIR\" ] && [ -x \"$SUPERSET_HOME_DIR/hooks/notify.sh\" ] && \"$SUPERSET_HOME_DIR/hooks/notify.sh\" || true"
+          }
+        ]
       }
     ],
     "PreToolUse": [
@@ -43,6 +98,50 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/block-secrets.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/typecheck.sh",
+            "timeout": 20,
+            "statusMessage": "Type-checking..."
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"$SUPERSET_HOME_DIR\" ] && [ -x \"$SUPERSET_HOME_DIR/hooks/notify.sh\" ] && \"$SUPERSET_HOME_DIR/hooks/notify.sh\" || true"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"$SUPERSET_HOME_DIR\" ] && [ -x \"$SUPERSET_HOME_DIR/hooks/notify.sh\" ] && \"$SUPERSET_HOME_DIR/hooks/notify.sh\" || true"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"$SUPERSET_HOME_DIR\" ] && [ -x \"$SUPERSET_HOME_DIR/hooks/notify.sh\" ] && \"$SUPERSET_HOME_DIR/hooks/notify.sh\" || true"
           }
         ]
       }
@@ -58,6 +157,8 @@
     "context7@claude-plugins-official": true,
     "figma@claude-plugins-official": true,
     "superpowers@superpowers-marketplace": true,
+    "superpowers@superpowers-dev": true,
+    "superpowers-developing-for-claude-code@superpowers-marketplace": true,
     "github@claude-plugins-official": true,
     "supabase@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
@@ -72,7 +173,38 @@
     "slack@claude-plugins-official": true,
     "firecrawl@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
-    "claude-md-management@claude-plugins-official": true
+    "claude-md-management@claude-plugins-official": true,
+    "codex@openai-codex": true
   },
-  "mcpServers": {}
+  "extraKnownMarketplaces": {
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    }
+  },
+  "autoDreamEnabled": true,
+  "skipDangerousModePermissionPrompt": true,
+  "model": "opus",
+  "mcpServers": {
+    "cloudinary-pex": {
+      "type": "stdio",
+      "command": "bash",
+      "args": [
+        "~/.claude/hooks/mcp-cloudinary.sh",
+        "pex",
+        "pex"
+      ]
+    },
+    "cloudinary-anaverse": {
+      "type": "stdio",
+      "command": "bash",
+      "args": [
+        "~/.claude/hooks/mcp-cloudinary.sh",
+        "anaverse",
+        "anaverse"
+      ]
+    }
+  }
 }

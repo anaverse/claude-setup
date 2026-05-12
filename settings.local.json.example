@@ -1,10 +1,75 @@
 {
+  "_README": "Personal/machine-local overrides. Copy to settings.local.json (gitignored) and edit. Claude Code merges this on top of settings.json.",
+
   "enabledMcpjsonServers": [
     "supabase",
     "n8n-mcp",
     "context7",
-    "clickup",
-    "hostinger"
+    "clickup-personal",
+    "clickup-plants-express",
+    "shopify-pex",
+    "hostinger",
+    "perplexity",
+    "cloudinary-personal",
+    "cloudinary-pex"
   ],
-  "enableAllProjectMcpServers": true
+  "enableAllProjectMcpServers": true,
+
+  "_hooks_note": "The following hook blocks require local installations. Remove or adjust as appropriate per machine.",
+
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "_note": "Requires: pipx install omni-cortex. Adjust pipx venv path if your install differs.",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.local/pipx/venvs/omni-cortex/bin/python\" \"$HOME/.local/pipx/venvs/omni-cortex/lib/python3.14/site-packages/omni_cortex/_bundled/hooks/stop.py\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "_note": "omni-cortex pre-tool hook (local install).",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.local/pipx/venvs/omni-cortex/bin/python\" \"$HOME/.local/pipx/venvs/omni-cortex/lib/python3.14/site-packages/omni_cortex/_bundled/hooks/pre_tool_use.py\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "",
+        "_note": "omni-cortex post-tool hook (local install).",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.local/pipx/venvs/omni-cortex/bin/python\" \"$HOME/.local/pipx/venvs/omni-cortex/lib/python3.14/site-packages/omni_cortex/_bundled/hooks/post_tool_use.py\""
+          }
+        ]
+      }
+    ]
+  },
+
+  "_extraKnownMarketplaces_note": "Marketplaces pointing to local checkouts. Update the path to your local clone.",
+
+  "extraKnownMarketplaces": {
+    "claudex": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/<you>/path/to/claudex"
+      }
+    }
+  },
+
+  "_enabledPlugins_note": "Plugins from local-source marketplaces (claudex above).",
+
+  "enabledPlugins": {
+    "claudex@claudex": true
+  }
 }

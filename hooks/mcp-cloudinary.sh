@@ -1,9 +1,10 @@
 #!/bin/bash
 # Wrapper: loads Cloudinary secrets from Keychain, then starts the MCP server
 # Usage: mcp-cloudinary.sh <account-name> <cloud-name>
-#   e.g. mcp-cloudinary.sh myaccount mycloud
+#   e.g. mcp-cloudinary.sh pex pex
+#   e.g. mcp-cloudinary.sh anaverse anaverse
 
-ACCOUNT="${1:?Missing account name (e.g. myaccount)}"
+ACCOUNT="${1:?Missing account name (e.g. pex, anaverse)}"
 CLOUD_NAME="${2:?Missing cloud name}"
 
 # Load secrets from Keychain using the ACCOUNT prefix

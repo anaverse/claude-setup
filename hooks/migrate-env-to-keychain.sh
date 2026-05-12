@@ -63,7 +63,7 @@ while IFS= read -r line; do
   fi
 
   # Add to Keychain
-  security add-generic-password -s "$KEY" -a "$(whoami)" -w "$VALUE"
+  security add-generic-password -s "$KEY" -a "ana" -w "$VALUE"
   if [ $? -eq 0 ]; then
     echo "  ADDED  $KEY"
     ((COUNT++))

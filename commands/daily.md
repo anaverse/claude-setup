@@ -93,6 +93,50 @@ Good morning! Here's your briefing for TODAY.
 What are we working on today?
 ```
 
+## Phase 2 — Day Scoping (after user lists projects)
+
+Once the user shares what they want to work on today:
+
+8. **Estimate sessions per project**
+   - For each project, estimate Claude Code sessions needed (1 session = 1 focused deliverable, 30-90 min)
+   - Factors: complexity, multi-system integration, new vs. continuation, PRD needed
+   - Flag projects that need a PRD before coding
+
+9. **Build the time-blocked schedule**
+   - Present a table: `| # | Project | Sessions | Priority | Notes |`
+   - Then a time-blocked schedule:
+     - Morning (high energy) → complex/creative work, PRDs
+     - Afternoon → execution, bounded tasks
+     - Evening (optional) → low-priority or bonus items
+   - Be realistic: cap at 5-6 sessions for a full day, 3-4 for a half day
+
+10. **Log to Cortex**
+    - Call `cortex_remember` with the day plan, tagged `day-plan, YYYY-MM-DD, session-planning`
+    - Include project names, session estimates, and priorities
+
+11. **Present the plan and ask to start**
+    - Show the schedule
+    - Recommend which project to start with and why
+    - Ask: "Ready to start Session 1?"
+
+```
+## Day Plan — TODAY
+
+| # | Project | Sessions | Priority |
+|---|---------|----------|----------|
+| 1 | [project] | N | HIGH/MED/LOW |
+
+### Schedule
+Morning: [Session 1-3 details]
+Afternoon: [Session 4-5 details]
+Evening (optional): [Session 6+ details]
+
+Realistic target: N sessions today.
+Recommended start: [project] — [reason]
+
+Ready to start Session 1?
+```
+
 ## If Obsidian is Unreachable
 
 Fall back to Cortex-only mode:

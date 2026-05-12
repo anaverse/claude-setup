@@ -9,7 +9,7 @@ argument-hint: [optional: project name]
 
 ## Purpose
 
-Document the current project in detail to the Obsidian vault. Creates a new project note or updates an existing one.
+Document the current project in detail to the Obsidian vault (flowlabs). Creates a new project note or updates an existing one.
 
 ## Variables
 
@@ -37,12 +37,12 @@ PROJECT_NAME: (detect from directory name if not provided)
    - Identify: purpose, stack, architecture, current state, key decisions
 
 3. **Check vault for existing note**
-   - Search project notes folder for `[project-name].md`
-   - Search client folders for client-related projects
+   - Search `Personal/Projects/` for `[project-name].md`
+   - Search `Automatelly/Clients/` for client-related projects
    - If found, read the existing note for context
 
 4. **Determine file placement**
-   - If the project has a client/business context → `[Business]/Clients/[client]/[project-name].md`
+   - If the project has a client/business context → `Automatelly/Clients/[client]/[project-name].md`
    - If it's a personal project → `Personal/Projects/[project-name].md`
    - If unclear → ask the user where to place it
 

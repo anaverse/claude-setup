@@ -42,7 +42,13 @@ HANDOFF_DIR: specs/handoffs/
    - Read the handoff file
    - Present information in a clear, actionable format
 
-5. **Offer next steps**
+5. **Quick health check** (best-effort, non-blocking)
+   - If the project has a `DATABASE_URL` in `.env`, run a quick DB connectivity check
+   - If the project has pending migrations (files in `db/migrations/` not yet reflected in DB columns), flag them
+   - Run `npm run build` only if the handoff notes suggest broken state; otherwise skip
+   - Report any issues found before presenting next steps — don't assume clean state
+
+6. **Offer next steps**
    - Based on handoff content, suggest where to start
 
 ## Report

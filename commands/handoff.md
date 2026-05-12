@@ -1,6 +1,6 @@
 ---
 description: Save session state for seamless continuation later
-allowed-tools: Read, Write, Glob, Bash, Skill, mcp__MCP_DOCKER__obsidian_append_content, mcp__MCP_DOCKER__obsidian_simple_search, mcp__MCP_DOCKER__obsidian_get_file_contents, mcp__MCP_DOCKER__obsidian_list_files_in_dir, mcp__MCP_DOCKER__obsidian_patch_content, mcp__omni-cortex__cortex_remember, mcp__omni-cortex__cortex_end_session, mcp__omni-cortex__cortex_get_session_context, mcp__omni-cortex__cortex_link_memories
+allowed-tools: Read, Write, Glob, Bash, mcp__MCP_DOCKER__obsidian_append_content, mcp__MCP_DOCKER__obsidian_simple_search, mcp__MCP_DOCKER__obsidian_get_file_contents, mcp__MCP_DOCKER__obsidian_list_files_in_dir, mcp__MCP_DOCKER__obsidian_patch_content, mcp__omni-cortex__cortex_remember, mcp__omni-cortex__cortex_end_session, mcp__omni-cortex__cortex_get_session_context, mcp__omni-cortex__cortex_link_memories
 model: sonnet
 argument-hint: [optional: topic name]
 ---
@@ -21,7 +21,8 @@ HANDOFF_DIR: specs/handoffs/
 - Review the current conversation to capture context
 - Include specific file paths, not vague descriptions
 - Number handoffs sequentially (001, 002, 003...)
-- Be detailed about next steps - future you will thank present you
+- Be detailed about next steps — future you will thank present you
+- Keep it fast — this should take under 30 seconds
 
 ## Workflow
 
@@ -36,7 +37,7 @@ HANDOFF_DIR: specs/handoffs/
 3. **Generate filename**
    - Format: `[NNN]-[YYYY-MM-DD]-[topic].md`
    - Example: `001-2026-01-24-api-setup.md`
-   - If no topic provided, use "session"
+   - If no topic provided, derive one from the conversation context (2-3 words, kebab-case)
 
 4. **Gather context from conversation**
    - What task/feature we were working on
@@ -50,12 +51,12 @@ HANDOFF_DIR: specs/handoffs/
    - Write to `specs/handoffs/[filename]`
    - Use the structured format below
 
-6. **Write lean session summary to Obsidian vault (best-effort)**
-   - This step is NON-BLOCKING — if Obsidian is unreachable, skip it and continue
-   - Determine filename: `Claude/Sessions/YYYY-MM-DD-[project-name].md`
+6. **Write session summary to Obsidian (best-effort)**
+   - This step is NON-BLOCKING — if Obsidian is unreachable, skip and continue
+   - Filename: `Claude/Sessions/YYYY-MM-DD-[project-name].md`
      - If a file with that name already exists, append `-2`, `-3`, etc.
      - Project name = current directory name in kebab-case
-   - Write a lean summary using `obsidian_append_content`:
+   - Write using `obsidian_append_content`:
      ```markdown
      ---
      date: YYYY-MM-DD
@@ -77,51 +78,34 @@ HANDOFF_DIR: specs/handoffs/
      - [Step 1]
      - [Step 2]
      ```
-   - If the vault write fails, log a note in the report but don't fail the handoff
 
-7. **Save key decisions and solutions to Cortex (best-effort)**
+7. **Save key decisions to Cortex (best-effort)**
    - This step is NON-BLOCKING — if Cortex is unreachable, skip and continue
-   - Review the conversation for important decisions, solutions, and patterns
-   - For each significant item, call `cortex_remember` — all fields MUST be nested inside a `params` object:
-     ```
-     cortex_remember({ params: { content: "...", tags: [...], type: "...", importance: N, context: "..." } })
-     ```
+   - For each significant decision/solution/learning, call `cortex_remember` with params:
      - **Decisions**: type "decision", importance 70-90
-       - e.g. "Chose X over Y for [reason]"
      - **Solutions**: type "solution", importance 60-80
-       - e.g. "Fixed [problem] by [approach]"
-     - **Patterns/Learnings**: type "learning", importance 50-70
-       - e.g. "This codebase uses [pattern] for [purpose]"
-   - Tag each memory with: project name, relevant technologies, client name if applicable
-   - If multiple memories are created, use `cortex_link_memories` to connect related ones
-   - Aim for 2-5 memories per session — only save what's genuinely worth recalling later
+     - **Patterns**: type "learning", importance 50-70
+   - Tag with: project name, relevant technologies
+   - Link related memories with `cortex_link_memories`
+   - Aim for 2-5 memories per session — only save what's worth recalling
+   - Call `cortex_end_session` with summary and key_learnings
 
-8. **End the Cortex session (best-effort)**
-   - This step is NON-BLOCKING — if Cortex is unreachable, skip and continue
-   - Call `cortex_end_session` with:
-     - The session_id from the current session (if `/daily` was run, reuse that ID; otherwise use the auto-generated one)
-     - A brief summary of what was accomplished
-     - key_learnings: list of 2-3 key takeaways from this session
+8. **Update wiki articles (best-effort)**
+   - This step is NON-BLOCKING — if the wiki is empty or Obsidian is unreachable, skip
+   - Read `wiki/_index.md` to get current categories and articles
+   - Based on what was worked on in this session, identify relevant wiki articles
+   - For each relevant article:
+     - Read it with `obsidian_get_file_contents`
+     - Merge in new learnings, decisions, or solutions from this session
+     - Update the `updated` date in frontmatter
+     - Write back with `obsidian_patch_content`
+   - If a significant new topic emerged with no existing article:
+     - Create a new article in the appropriate wiki category
+     - Update the category `_index.md` and `wiki/_index.md`
+   - Keep updates small and focused — this is a per-session update, not a full recompile
 
-9. **Generate Excalidraw session diagram (best-effort)**
-   - This step is NON-BLOCKING — if it fails, skip and continue
-   - Use the `/excalidraw-diagram` skill to generate the diagram
-   - **Diagram layout** — hybrid timeline + project state:
-     - **Left side**: Flowchart/timeline of completed items and in-progress work (top to bottom)
-     - **Right side**: Mind map of project state — key files, decisions, blockers, connections
-     - **Bottom**: Next steps as a horizontal row
-   - **Filename**: `Claude/Sessions/YYYY-MM-DD-[project-name].diagram.md` (same base name as session note)
-   - Write the Excalidraw `.md` file to the vault using `obsidian_append_content`
-   - Append an embed link to the bottom of the session note using `obsidian_patch_content`:
-     ```markdown
-
-     ## Visual Map
-     ![[YYYY-MM-DD-[project-name].diagram]]
-     ```
-
-10. **Confirm creation**
-   - Report the handoff filename, vault summary status, Cortex status, and diagram status
-   - Remind user to run `/pickup` in next session
+9. **Confirm creation**
+   - Report using the format below
 
 ## Handoff File Format
 
@@ -157,11 +141,12 @@ HANDOFF_DIR: specs/handoffs/
 Handoff Created
 
 File: specs/handoffs/[filename]
-Vault: Claude/Sessions/[filename] [written / skipped - Obsidian unreachable]
+Vault: Claude/Sessions/[filename] [written / skipped]
 Cortex: [N memories saved / skipped] | Session [ended / skipped]
-Diagram: Claude/Sessions/[filename].diagram [written / skipped]
+Wiki: Updated [N] articles ([list]) | skipped
+Wiki: Created [N] new articles ([list]) | skipped
 Number: [NNN]
 Topic: [topic]
 
-To resume: Run `/daily` (full briefing) or `/pickup` (handoff only) in your next session
+To resume: /pickup
 ```

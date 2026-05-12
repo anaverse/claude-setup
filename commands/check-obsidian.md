@@ -9,7 +9,7 @@ argument-hint: [optional: topic to search for]
 
 ## Purpose
 
-Pull relevant context from the Obsidian vault into the current session. Searches for notes related to the current project or a specific topic.
+Pull relevant context from the Obsidian vault (flowlabs) into the current session. Searches for notes related to the current project or a specific topic.
 
 ## Variables
 
@@ -31,10 +31,10 @@ PROJECT_NAME: (detect from current directory name or git remote)
    - Build search terms: project name, key technologies, client names if obvious
 
 2. **Search the vault in priority order**
-   - Search session logs for recent entries matching the project/topic
-   - Search project notes folder for project-specific notes
-   - Search client folders for client-related context
-   - Search company notes for company info
+   - Search `Claude/Sessions/` for recent session logs matching the project/topic
+   - Search `Personal/Projects/` for project-specific notes
+   - Search `Automatelly/Clients/` for client-related context
+   - Search `Companies/` for company info
    - If still under 3 results, do a broad `obsidian_simple_search` across the whole vault
 
 3. **Read and summarize matches**

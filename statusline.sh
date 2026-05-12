@@ -98,10 +98,18 @@ bar=""
 for ((i=0; i<filled; i++)); do bar+="▓"; done
 for ((i=0; i<empty; i++)); do bar+="░"; done
 
-# Git branch
+# Git branch + open-work indicator (dirty count, unpushed commits) — surfaces /close gap
 git_branch=""
+git_dirty=0
+git_ahead=0
 if [ -d "$cwd" ]; then
   git_branch=$(cd "$cwd" 2>/dev/null && git branch --show-current 2>/dev/null || true)
+  if [ -n "$git_branch" ]; then
+    git_dirty=$(cd "$cwd" 2>/dev/null && git status --porcelain 2>/dev/null | wc -l | tr -d ' ' || echo 0)
+    if cd "$cwd" 2>/dev/null && git rev-parse --abbrev-ref @{u} >/dev/null 2>&1; then
+      git_ahead=$(cd "$cwd" 2>/dev/null && git rev-list --count @{u}..HEAD 2>/dev/null || echo 0)
+    fi
+  fi
 fi
 
 # Truncate path (replace HOME with ~)
@@ -148,9 +156,17 @@ fi
 
 if [ -n "$git_branch" ]; then
   output+="${sep}${green}⎇ ${git_branch}${reset}"
+  # Append open-work badge — only render when there's something to flag
+  if [ "$git_dirty" -gt 0 ] 2>/dev/null || [ "$git_ahead" -gt 0 ] 2>/dev/null; then
+    badge=""
+    [ "$git_dirty" -gt 0 ] 2>/dev/null && badge+=" ${yellow}●${git_dirty}${reset}"
+    [ "$git_ahead" -gt 0 ] 2>/dev/null && badge+=" ${yellow}↑${git_ahead}${reset}"
+    output+="${badge}"
+  fi
 fi
 output+="${sep}${blue}${path_display}${reset}"
 output+="${sep}${cyan}⏱ ${duration_display} (since ${start_time})${reset}"
 output+="${sep}${purple}${current_datetime}${reset}"
+output+="${sep}${yellow}DIR${reset}${dim}·${reset}${yellow}STACK${reset}${dim}·${reset}${yellow}TRIED${reset}"
 
 printf "%b" "$output"
